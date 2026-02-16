@@ -1,0 +1,31 @@
+{
+  "name": "hashmap",
+  "version": "1.0.0",
+  "description": "experimenting with hashmaps",
+  "keywords": [
+    "hashmap",
+    "hash",
+    "map"
+  ],
+  "homepage": "https://github.com/mostafa-imam/HashMap#readme",
+  "bugs": {
+    "url": "https://github.com/mostafa-imam/HashMap/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mostafa-imam/HashMap.git"
+  },
+  "license": "ISC",
+  "type": "module",
+  "main": "main.js",
+  "scripts": {
+    "prelint": "prettier main.js hash-map.js --write",
+    "lint": "eslint main.js hash-map.js"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.0",
+    "globals": "^17.3.0",
+    "prettier": "3.8.1"
+  }
+}
