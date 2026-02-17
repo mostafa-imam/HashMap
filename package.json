@@ -19,8 +19,8 @@
   "type": "module",
   "main": "main.js",
   "scripts": {
-    "prelint": "prettier main.js hash-map.js --write",
-    "lint": "eslint main.js hash-map.js"
+    "prelint": "prettier main.js hash-map.js linked-list.js --write",
+    "lint": "eslint main.js hash-map.js linked-list.js"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
