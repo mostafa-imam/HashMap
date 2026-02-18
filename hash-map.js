@@ -5,7 +5,7 @@ class HashMap {
         this.capacity = 16;
         this.loadFactor = 0.75;
         this.size = 0;
-        this.buckets = new Array(16).fill(undefined);
+        this.buckets = new Array(this.capacity).fill(undefined);
     }
 
     hash(key) {
@@ -132,6 +132,10 @@ class HashMap {
         return this.size;
     }
 
+    clear() {
+        this.buckets = new Array(this.capacity).fill(undefined);
+        this.size = 0;
+    }
 }
 
 /* Tests */
@@ -148,4 +152,6 @@ hash.set("Sita", "Value 2");
 
 // console.log(hash.remove("Rama"));
 // console.log(hash.remove("Rama"));
-console.log(hash.length());
+console.log(hash.buckets[3]);
+console.log(hash.clear());
+console.log(hash);
