@@ -172,6 +172,25 @@ class HashMap {
                 temp = temp.nextNode;
             }
 
+        });
+
+        return arr
+    }
+
+    entries() {
+        let arr = [];
+        const buckets = this.buckets;
+
+        buckets.forEach(item => {
+
+            if (!item || item.head === null) return;
+
+            let temp = item.head;
+
+            while (temp !== null) {
+                arr.push([temp.key, temp.value]);
+                temp = temp.nextNode;
+            }
 
         });
 
@@ -191,7 +210,7 @@ hash.set("Rama", "Value 2");
 hash.set("Sita", "Value 3");
 // console.log(hash.buckets[3].head);
 
-console.log(hash.keys());
+console.log(hash.entries());
 // console.log(hash.remove("Rama"));
 // console.log(hash.buckets[3]);
 // console.log(hash.clear());
