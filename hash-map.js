@@ -100,20 +100,48 @@ class HashMap {
         }
         return false;
     }
+
+    remove(key) {
+        const hash = this.hash(key);
+        const bucket = this.buckets[hash];
+
+        if (bucket === undefined || bucket.head === null) return false;
+
+        if (bucket.head.key === key) {
+            bucket.head = bucket.head.nextNode;
+            this.size--;
+            return true;
+        }
+
+        let temp = bucket.head;
+
+        while (temp.nextNode !== null) {
+            if (temp.nextNode.key === key) {
+                temp.nextNode = temp.nextNode.nextNode;
+                this.size--;
+                return true;
+            }
+
+            temp = temp.nextNode;
+        }
+
+        return false;
+    }
+
 }
 
 /* Tests */
 
 const hash = new HashMap();
-hash.set("Rama", "the old value");
+hash.set("Rama", "Value 1");
 // console.log(hash.buckets[3].head);
 
-hash.set("Rama", "the new value");
+// hash.set("Rama", "the new value");
 // console.log(hash.buckets[3].head);
 
-hash.set("Sita", "something new");
+// hash.set("Sita", "Value 2");
 // console.log(hash.buckets[3].head);
 
-console.log(hash.has("Doe"));
-
-// console.log(hash.buckets);
+console.log(hash.remove("Rama"));
+console.log(hash.remove("Rama"));
+console.log(hash.buckets[3]);
