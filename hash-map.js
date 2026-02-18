@@ -143,17 +143,35 @@ class HashMap {
 
         buckets.forEach(item => {
 
-            if (item !== undefined) {
-                if (!item || item.head === null) return;
+            if (!item || item.head === null) return;
 
-                let temp = item.head;
+            let temp = item.head;
 
-                while (temp !== null) {
-                    arr.push(temp.key);
-                    temp = temp.nextNode;
-                }
-
+            while (temp !== null) {
+                arr.push(temp.key);
+                temp = temp.nextNode;
             }
+
+        });
+
+        return arr
+    }
+
+    values() {
+        let arr = [];
+        const buckets = this.buckets;
+
+        buckets.forEach(item => {
+
+            if (!item || item.head === null) return;
+
+            let temp = item.head;
+
+            while (temp !== null) {
+                arr.push(temp.value);
+                temp = temp.nextNode;
+            }
+
 
         });
 
