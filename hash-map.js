@@ -1,217 +1,270 @@
 import { Node, LinkedList } from "./linked-list.js";
 
 class HashMap {
-    constructor() {
-        this.capacity = 16;
-        this.loadFactor = 0.75;
-        this.size = 0;
-        this.buckets = new Array(this.capacity).fill(undefined);
+  constructor() {
+    this.capacity = 16;
+    this.loadFactor = 0.75;
+    this.size = 0;
+    this.buckets = new Array(this.capacity).fill(undefined);
+  }
+
+  hash(key) {
+    if (typeof key !== "string") {
+      throw new TypeError("Keys must be strings");
     }
 
-    hash(key) {
-        if (typeof key !== "string") {
-            throw new TypeError("Keys must be strings");
-        }
+    let hashCode = 0;
+    const primeNumber = 31;
 
-        let hashCode = 0;
-        const primeNumber = 31;
-
-        for (let i = 0; i < key.length; i++) {
-            hashCode = primeNumber * hashCode + key.charCodeAt(i);
-            hashCode = hashCode % this.capacity;
-        }
-
-        return hashCode;
+    for (let i = 0; i < key.length; i++) {
+      hashCode = primeNumber * hashCode + key.charCodeAt(i);
+      hashCode = hashCode % this.capacity;
     }
 
-    set(key, value) {
-        const hash = this.hash(key);
+    return hashCode;
+  }
 
-        if (this.buckets[hash] === undefined) {
-            const node = new Node();
-            node.key = key;
-            node.value = value;
+  set(key, value) {
+    const hash = this.hash(key);
 
-            this.buckets[hash] = new LinkedList();
-            this.buckets[hash].head = node;
-            this.size++;
-            return;
-        }
+    if (this.buckets[hash] === undefined) {
+      const node = new Node();
+      node.key = key;
+      node.value = value;
 
-        let temp = this.buckets[hash].head;
-
-        while (temp !== null) {
-            if (temp.key === key) {
-                temp.value = value;
-                return;
-            }
-
-            if (temp.nextNode === null) {
-                const node = new Node();
-                node.key = key;
-                node.value = value;
-
-                temp.nextNode = node;
-                this.size++;
-                return;
-            }
-
-            temp = temp.nextNode;
-        }
+      this.buckets[hash] = new LinkedList();
+      this.buckets[hash].head = node;
+      this.size++;
+      this.grow();
+      return;
     }
 
-    get(key) {
-        const hash = this.hash(key);
-        const bucket = this.buckets[hash];
+    let temp = this.buckets[hash].head;
 
-        if (bucket === undefined) {
-            return null;
-        }
+    while (temp !== null) {
+      if (temp.key === key) {
+        temp.value = value;
+        return;
+      }
 
-        let temp = bucket.head;
+      if (temp.nextNode === null) {
+        const node = new Node();
+        node.key = key;
+        node.value = value;
 
-        while (temp !== null) {
-            if (temp.key === key) {
-                return temp.value;
-            }
+        temp.nextNode = node;
+        this.size++;
+        this.grow();
+        return;
+      }
 
-            temp = temp.nextNode;
-        }
+      temp = temp.nextNode;
+    }
+  }
 
-        return null;
+  get(key) {
+    const hash = this.hash(key);
+    const bucket = this.buckets[hash];
+
+    if (bucket === undefined) {
+      return null;
     }
 
-    has(key) {
-        const hash = this.hash(key);
-        const bucket = this.buckets[hash];
+    let temp = bucket.head;
 
-        if (bucket === undefined) {
-            return false;
-        }
+    while (temp !== null) {
+      if (temp.key === key) {
+        return temp.value;
+      }
 
-        let temp = bucket.head;
-
-        while (temp !== null) {
-            if (temp.key === key) {
-                return true;
-            }
-
-            temp = temp.nextNode;
-        }
-        return false;
+      temp = temp.nextNode;
     }
 
-    remove(key) {
-        const hash = this.hash(key);
-        const bucket = this.buckets[hash];
+    return null;
+  }
 
-        if (bucket === undefined || bucket.head === null) return false;
+  has(key) {
+    const hash = this.hash(key);
+    const bucket = this.buckets[hash];
 
-        if (bucket.head.key === key) {
-            bucket.head = bucket.head.nextNode;
-            this.size--;
-            return true;
-        }
-
-        let temp = bucket.head;
-
-        while (temp.nextNode !== null) {
-            if (temp.nextNode.key === key) {
-                temp.nextNode = temp.nextNode.nextNode;
-                this.size--;
-                return true;
-            }
-
-            temp = temp.nextNode;
-        }
-
-        return false;
+    if (bucket === undefined) {
+      return false;
     }
 
-    length() {
-        return this.size;
+    let temp = bucket.head;
+
+    while (temp !== null) {
+      if (temp.key === key) {
+        return true;
+      }
+
+      temp = temp.nextNode;
+    }
+    return false;
+  }
+
+  remove(key) {
+    const hash = this.hash(key);
+    const bucket = this.buckets[hash];
+
+    if (bucket === undefined || bucket.head === null) return false;
+
+    if (bucket.head.key === key) {
+      bucket.head = bucket.head.nextNode;
+      this.size--;
+      return true;
     }
 
-    clear() {
-        this.buckets = new Array(this.capacity).fill(undefined);
-        this.size = 0;
+    let temp = bucket.head;
+
+    while (temp.nextNode !== null) {
+      if (temp.nextNode.key === key) {
+        temp.nextNode = temp.nextNode.nextNode;
+        this.size--;
+        return true;
+      }
+
+      temp = temp.nextNode;
     }
 
-    keys() {
-        let arr = [];
-        const buckets = this.buckets;
+    return false;
+  }
 
-        buckets.forEach(item => {
+  length() {
+    return this.size;
+  }
 
-            if (!item || item.head === null) return;
+  clear() {
+    this.buckets = new Array(this.capacity).fill(undefined);
+    this.size = 0;
+  }
 
-            let temp = item.head;
+  keys() {
+    let arr = [];
+    const buckets = this.buckets;
 
-            while (temp !== null) {
-                arr.push(temp.key);
-                temp = temp.nextNode;
-            }
+    buckets.forEach((item) => {
+      if (!item || item.head === null) return;
 
-        });
+      let temp = item.head;
 
-        return arr
+      while (temp !== null) {
+        arr.push(temp.key);
+        temp = temp.nextNode;
+      }
+    });
+
+    return arr;
+  }
+
+  values() {
+    let arr = [];
+    const buckets = this.buckets;
+
+    buckets.forEach((item) => {
+      if (!item || item.head === null) return;
+
+      let temp = item.head;
+
+      while (temp !== null) {
+        arr.push(temp.value);
+        temp = temp.nextNode;
+      }
+    });
+
+    return arr;
+  }
+
+  entries() {
+    let arr = [];
+    const buckets = this.buckets;
+
+    buckets.forEach((item) => {
+      if (!item || item.head === null) return;
+
+      let temp = item.head;
+
+      while (temp !== null) {
+        arr.push([temp.key, temp.value]);
+        temp = temp.nextNode;
+      }
+    });
+
+    return arr;
+  }
+
+  grow() {
+    if (this.length() > this.capacity * this.loadFactor) {
+      let oldEntries = this.entries();
+
+      this.capacity = this.capacity * 2;
+      this.buckets = new Array(this.capacity).fill(undefined);
+
+      oldEntries.forEach((item) => {
+        this.#setWithoutGrowth(item[0], item[1]);
+      });
+    }
+  }
+
+  #setWithoutGrowth(key, value) {
+    const hash = this.hash(key);
+
+    if (this.buckets[hash] === undefined) {
+      const node = new Node();
+      node.key = key;
+      node.value = value;
+
+      this.buckets[hash] = new LinkedList();
+      this.buckets[hash].head = node;
+      this.size++;
+      return;
     }
 
-    values() {
-        let arr = [];
-        const buckets = this.buckets;
+    let temp = this.buckets[hash].head;
 
-        buckets.forEach(item => {
+    while (temp !== null) {
+      if (temp.key === key) {
+        temp.value = value;
+        return;
+      }
 
-            if (!item || item.head === null) return;
+      if (temp.nextNode === null) {
+        const node = new Node();
+        node.key = key;
+        node.value = value;
 
-            let temp = item.head;
+        temp.nextNode = node;
+        this.size++;
+        return;
+      }
 
-            while (temp !== null) {
-                arr.push(temp.value);
-                temp = temp.nextNode;
-            }
-
-        });
-
-        return arr
+      temp = temp.nextNode;
     }
-
-    entries() {
-        let arr = [];
-        const buckets = this.buckets;
-
-        buckets.forEach(item => {
-
-            if (!item || item.head === null) return;
-
-            let temp = item.head;
-
-            while (temp !== null) {
-                arr.push([temp.key, temp.value]);
-                temp = temp.nextNode;
-            }
-
-        });
-
-        return arr
-    }
+  }
 }
 
 /* Tests */
 
-const hash = new HashMap();
-hash.set("Rama", "Value 1");
-// console.log(hash.buckets[3].head);
+const test = new HashMap();
 
-hash.set("Rama", "Value 2");
-// console.log(hash.buckets[3].head);
+test.set("apple", "red");
+test.set("banana", "yellow");
+test.set("carrot", "orange");
+test.set("dog", "brown");
+test.set("elephant", "gray");
+test.set("frog", "green");
+test.set("grape", "purple");
+test.set("hat", "black");
+test.set("ice cream", "white");
+test.set("jacket", "blue");
+test.set("kite", "pink");
+test.set("lion", "golden");
+console.log(test.capacity);
+console.log(test.buckets);
 
-hash.set("Sita", "Value 3");
-// console.log(hash.buckets[3].head);
+console.log("----------------------------------");
 
-console.log(hash.entries());
-// console.log(hash.remove("Rama"));
-// console.log(hash.buckets[3]);
-// console.log(hash.clear());
-// console.log(hash);
+test.set("moon", "silver");
+
+console.log(test.capacity);
+console.log(test.buckets);
