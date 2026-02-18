@@ -128,6 +128,10 @@ class HashMap {
         return false;
     }
 
+    length() {
+        return this.size;
+    }
+
 }
 
 /* Tests */
@@ -136,12 +140,12 @@ const hash = new HashMap();
 hash.set("Rama", "Value 1");
 // console.log(hash.buckets[3].head);
 
-// hash.set("Rama", "the new value");
+hash.set("Rama", "the new value");
 // console.log(hash.buckets[3].head);
 
-// hash.set("Sita", "Value 2");
+hash.set("Sita", "Value 2");
 // console.log(hash.buckets[3].head);
 
-console.log(hash.remove("Rama"));
-console.log(hash.remove("Rama"));
-console.log(hash.buckets[3]);
+// console.log(hash.remove("Rama"));
+// console.log(hash.remove("Rama"));
+console.log(hash.length());
