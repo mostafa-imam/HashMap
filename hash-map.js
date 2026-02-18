@@ -60,6 +60,46 @@ class HashMap {
         }
     }
 
+    get(key) {
+        const hash = this.hash(key);
+        const bucket = this.buckets[hash];
+
+        if (bucket === undefined) {
+            return null;
+        }
+
+        let temp = bucket.head;
+
+        while (temp !== null) {
+            if (temp.key === key) {
+                return temp.value;
+            }
+
+            temp = temp.nextNode;
+        }
+
+        return null;
+    }
+
+    has(key) {
+        const hash = this.hash(key);
+        const bucket = this.buckets[hash];
+
+        if (bucket === undefined) {
+            return false;
+        }
+
+        let temp = bucket.head;
+
+        while (temp !== null) {
+            if (temp.key === key) {
+                return true;
+            }
+
+            temp = temp.nextNode;
+        }
+        return false;
+    }
 }
 
 /* Tests */
